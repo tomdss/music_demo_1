@@ -13,28 +13,43 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.IntDef;
 import android.support.v4.app.NotificationCompat;
+import android.widget.RemoteViews;
 
 import com.phongbm.musicplayer.R;
 import com.phongbm.musicplayer.model.Music;
 
 import java.util.ArrayList;
 
-public class MP3Service extends Service implements MediaPlayer.OnCompletionListener {
+public class MP3Service extends Service implements MediaPlayer.OnCompletionListener,Runnable {
 
     private ArrayList<Music> arrMusic;
     private MediaPlayer player;
     private int currentIndex;
+    private Thread t;
 
     private MutableLiveData<Boolean> isPlaying = new MutableLiveData<>();
     private MutableLiveData<String> name = new MutableLiveData<>();
     private MutableLiveData<Boolean> isLife = new MutableLiveData<>();
+    private MutableLiveData<String> artists = new MutableLiveData<>();
 
+    private MutableLiveData<Music> music = new MutableLiveData<>();
 
+    private MutableLiveData<Integer> current = new MutableLiveData<>();
+
+    public MutableLiveData<String> getArtists() {
+        return artists;
+    }
+
+    public void setArtists(MutableLiveData<String> artists) {
+        this.artists = artists;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        pushNotification();
+//        pushNotification();
+        t = new Thread(this);
+        t.start();
     }
 
     @Override
@@ -63,14 +78,25 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
         PendingIntent pending = PendingIntent.getService(this,
                 0, intent, 0);
 
+
+        RemoteViews remoteViews = new RemoteViews(getPackageName(),R.layout.ui_notification);
+        remoteViews.setTextViewText(R.id.tv_text,arrMusic.get(currentIndex).getTitle());
+        if(player.isPlaying()){
+            remoteViews.setImageViewResource(R.id.im_play,R.drawable.ic_pause);
+        }else {
+            remoteViews.setImageViewResource(R.id.im_play,R.drawable.ic_play);
+        }
+
+
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this, CHANNEL_ID);
         builder.setSmallIcon(R.mipmap.ic_launcher);
-        builder.setTicker("Push notification");
-        builder.setContentTitle("Keep service running");
-        builder.setContentText("Using foreground service");
+//        builder.setTicker("Push notification");
+//        builder.setContentTitle("Keep service running");
+//        builder.setContentText("Using foreground service");
+        builder.setCustomBigContentView(remoteViews);
 
-        builder.setContentIntent(pending);
+//        builder.setContentIntent(pending);
 
         startForeground(1213232, builder.build());
     }
@@ -89,12 +115,16 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
         }
         Uri uri= Uri.parse(arrMusic.get(index).getData());
         player = MediaPlayer.create(this, uri);
-        start();
+
         player.setOnCompletionListener(this);
         currentIndex = index;
 
         name.postValue(arrMusic.get(index).getTitle());
         isLife.postValue(true);
+
+        music.postValue(arrMusic.get(index));
+//        pushNotification();
+        start();
 
     }
 
@@ -102,6 +132,7 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
         if(player!=null){
             player.release();
             isPlaying.postValue(false);
+
         }
     }
 
@@ -109,6 +140,7 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
         if (player!=null){
             player.start();
             isPlaying.postValue(true);
+            pushNotification();
         }
     }
 
@@ -116,6 +148,7 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
         if (player!=null){
             player.pause();
             isPlaying.postValue(false);
+            pushNotification();
         }
     }
 
@@ -133,27 +166,48 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
 
     public int getDuration(){
         if (player!=null){
-            player.getDuration();
+            return player.getDuration();
         }
         return 0;
     }
 
     public int getPosition(){
         if (player!=null){
-            player.getCurrentPosition();
+            return player.getCurrentPosition();
         }
         return 0;
     }
 
+    public ArrayList<Music> getArrMusic() {
+        return arrMusic;
+    }
+
+    public MutableLiveData<Music> getMusic() {
+        return music;
+    }
+
     public static final int NEXT = 1;
     public static final int PREV = -1;
+
+    @Override
+    public void run() {
+        while (true){
+            current.postValue(getPosition());
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @IntDef({NEXT,PREV})
     public @interface TypeChange{
 
     }
 
     public void change(@TypeChange int value){
-        currentIndex = value;
+        currentIndex += value;
         if(currentIndex>=arrMusic.size()){
             currentIndex=0;
         }else if(currentIndex<0){
@@ -189,5 +243,9 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
 
     public MutableLiveData<Boolean> getIsLife() {
         return isLife;
+    }
+
+    public MutableLiveData<Integer> getCurrent() {
+        return current;
     }
 }

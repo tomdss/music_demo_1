@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 
 import com.phongbm.musicplayer.model.Album;
+import com.phongbm.musicplayer.model.Artist;
 import com.phongbm.musicplayer.model.FieldInfo;
 import com.phongbm.musicplayer.model.MP3Media;
 import com.phongbm.musicplayer.model.Music;
@@ -39,6 +40,12 @@ public class SystemData {
     public ArrayList<Album> getAbums() {
         Cursor cursor = resolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, null, null, null, null);
         return getData(cursor, Album.class);
+    }
+
+    public ArrayList<Artist> getArtist() {
+        Cursor cursor = resolver.query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, null, null, null, null);
+        return getData(cursor, Artist.class);
+
     }
 
     private <T extends MP3Media> ArrayList<T> getData(Cursor cursor, Class<T> clz) {

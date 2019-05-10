@@ -2,6 +2,7 @@ package com.phongbm.musicplayer.view;
 
 import android.arch.lifecycle.Observer;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -12,10 +13,11 @@ import android.widget.FrameLayout;
 import com.phongbm.musicplayer.App;
 import com.phongbm.musicplayer.R;
 import com.phongbm.musicplayer.acitivities.MainActivity;
+import com.phongbm.musicplayer.acitivities.PlayActivity;
 import com.phongbm.musicplayer.databinding.UiPlayViewBinding;
 import com.phongbm.musicplayer.service.MP3Service;
 
-public class MP3PlayView extends FrameLayout implements View.OnClickListener {
+public class MP3PlayView extends FrameLayout implements View.OnClickListener, MP3PlayViewListener {
 
     private UiPlayViewBinding binding;
     private App app;
@@ -47,9 +49,8 @@ public class MP3PlayView extends FrameLayout implements View.OnClickListener {
         setVisibility(GONE);
 
 
-        binding.imvPlay.setOnClickListener(this);
-        binding.imvPrevious.setOnClickListener(this);
-        binding.imvNext.setOnClickListener(this);
+        binding.setListener(this);
+        setOnClickListener(this);
 
     }
 
@@ -76,36 +77,50 @@ public class MP3PlayView extends FrameLayout implements View.OnClickListener {
             }
         });
 
+        app.getService().getArtists().observe(act, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                binding.setArtists(s);
+            }
+        });
+
         app.getService().getIsPlaying().observe(act, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean aBoolean) {
                 binding.setIsPlaying(aBoolean);
             }
         });
+
+
+
     }
 
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()){
-            case R.id.imv_previous:
-                app.getService().change(MP3Service.PREV);
-                break;
-            case R.id.imv_play:
-                if(binding.getIsPlaying()){
-                    app.getService().pause();
-                    binding.setIsPlaying(false);
-                }else {
-                    app.getService().start();
-                    binding.setIsPlaying(true);
-                }
-                break;
-            case R.id.imv_next:
-                app.getService().change(MP3Service.NEXT);
-                break;
-            default:
-                break;
-        }
+        Intent intent = new Intent(getContext(), PlayActivity.class);
+        getContext().startActivity(intent);
 
+    }
+
+    @Override
+    public void next() {
+        app.getService().change(MP3Service.NEXT);
+    }
+
+    @Override
+    public void prev() {
+
+        app.getService().change(MP3Service.PREV);
+
+    }
+
+    @Override
+    public void play() {
+        if(app.getService().getIsPlaying().getValue()==true){
+            app.getService().pause();
+        }else {
+            app.getService().start();
+        }
     }
 }

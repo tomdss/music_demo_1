@@ -8,7 +8,7 @@ public class Music extends MP3Media {
     @FieldInfo(fieldName = MediaStore.Audio.AudioColumns.DATA)
     private String data;
     @FieldInfo(fieldName = MediaStore.Audio.AudioColumns.DURATION)
-    private long duration;
+    private int duration;
     @FieldInfo(fieldName = MediaStore.Audio.AudioColumns.ARTIST)
     private String artist;
     @FieldInfo(fieldName = MediaStore.Audio.AudioColumns.ALBUM)
@@ -23,7 +23,7 @@ public class Music extends MP3Media {
         return data;
     }
 
-    public long getDuration() {
+    public int getDuration() {
         return duration;
     }
 

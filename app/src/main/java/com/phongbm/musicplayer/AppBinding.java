@@ -2,8 +2,12 @@ package com.phongbm.musicplayer;
 
 import android.databinding.BindingAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class AppBinding {
     @BindingAdapter("thumb")
@@ -12,4 +16,11 @@ public class AppBinding {
                 .load(img)
                 .into(im);
     }
+
+    @BindingAdapter("time")
+    public static void setTime(TextView tv,int time){
+        SimpleDateFormat format = new SimpleDateFormat("mm:ss");
+        tv.setText(format.format(new Date(time)));
+    }
+
 }

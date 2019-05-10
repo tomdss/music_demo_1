@@ -52,6 +52,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding>
     private BaseAdapter<Music> musicAdapter;
 
     private ServiceConnection connection = new ServiceConnection() {
+
+        //chu nhat 12/5 hoc tu 2h
+
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             MP3Service.MP3Binder binder = (MP3Service.MP3Binder) service;
