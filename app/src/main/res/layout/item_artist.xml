@@ -5,14 +5,15 @@
             name="item"
             type="com.phongbm.musicplayer.model.Artist"/>
         <variable
-            name="listiener"
-            type="com.phongbm.musicplayer.model.Artist"/>
+            name="listener"
+            type="com.phongbm.musicplayer.fragments.MediaListener"/>
     </data>
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:onClick="@{(v)->listener.onItemMediaClick(item)}"
         >
         <LinearLayout
             android:layout_width="match_parent"
@@ -68,7 +69,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text=" bài hát"
+                        android:text=" Song"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="14sp"/>
                 </LinearLayout>

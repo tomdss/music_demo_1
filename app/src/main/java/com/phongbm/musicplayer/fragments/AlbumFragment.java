@@ -1,10 +1,14 @@
 package com.phongbm.musicplayer.fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.phongbm.musicplayer.R;
+import com.phongbm.musicplayer.acitivities.AlbumActivity;
+import com.phongbm.musicplayer.acitivities.ArtistActivity;
+import com.phongbm.musicplayer.acitivities.MainActivity;
 import com.phongbm.musicplayer.adapter.BaseAdapter;
 import com.phongbm.musicplayer.base.BaseFragment;
 import com.phongbm.musicplayer.dao.SystemData;
@@ -39,6 +43,10 @@ public class AlbumFragment extends BaseFragment<FragmentAlbumBinding> implements
 
     @Override
     public void onItemMediaClick(Album album) {
+
+        Intent intent = new Intent(getContext(), AlbumActivity.class);
+        intent.putExtra(MainActivity.REQUEST_ALBUM,album.getName());
+        startActivity(intent);
 
     }
 }

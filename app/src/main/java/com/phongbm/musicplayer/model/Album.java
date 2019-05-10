@@ -3,6 +3,7 @@ package com.phongbm.musicplayer.model;
 import android.provider.MediaStore;
 
 public class Album extends MP3Media{
+
     @FieldInfo(fieldName = MediaStore.Audio.Albums.ALBUM)
     private String name;
     @FieldInfo(fieldName = MediaStore.Audio.Albums.ARTIST)

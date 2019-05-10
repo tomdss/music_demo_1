@@ -93,6 +93,8 @@ public class MP3PlayView extends FrameLayout implements View.OnClickListener, MP
 
 
 
+
+
     }
 
     @Override
@@ -122,5 +124,19 @@ public class MP3PlayView extends FrameLayout implements View.OnClickListener, MP
         }else {
             app.getService().start();
         }
+    }
+
+    @Override
+    public void repeat() {
+            app.getService().getIsRepeat();
+
+    }
+
+    @Override
+    public void shuffle() {
+
+            app.getService().shuffle();
+
+
     }
 }

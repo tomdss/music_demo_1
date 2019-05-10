@@ -42,9 +42,24 @@ public class PlayActivity extends BaseActivity<ActivityPlayBinding> implements M
             @Override
             public void onChanged(@Nullable Integer integer) {
                 binding.setCurrent(integer);
-                int m=1;
+//                int m=1;
             }
         });
+
+        app.getService().getIsShuffle().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                binding.setIsShuffle(aBoolean);
+            }
+        });
+
+        app.getService().getIsRepeat().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                binding.setIsRepeat(aBoolean);
+            }
+        });
+
 
         binding.setListener(this);
         binding.sbTime.setOnSeekBarChangeListener(this);
@@ -71,6 +86,26 @@ public class PlayActivity extends BaseActivity<ActivityPlayBinding> implements M
         }else {
             app.getService().start();
         }
+
+    }
+
+    @Override
+    public void repeat() {
+
+        app.getService().repeat();
+
+    }
+
+    @Override
+    public void shuffle() {
+
+        app.getService().shuffle();
+
+//        if(app.getService().getIsShuffle().getValue()==true){
+//            app.getService().notShuffle();
+//        }else {
+//            app.getService().shuffle();
+//        }
 
     }
 

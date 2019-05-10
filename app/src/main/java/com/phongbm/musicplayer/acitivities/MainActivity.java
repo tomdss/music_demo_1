@@ -42,6 +42,9 @@ import java.util.ArrayList;
 public class MainActivity extends BaseActivity<ActivityMainBinding>
         implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, View.OnFocusChangeListener, MediaListener<Music> {
 
+    public static final String REQUEST_ARTIST = "artist.name";
+    public static final String REQUEST_ALBUM = "album.name";
+
     private MusicFragment fmMusic = new MusicFragment();
     private AlbumFragment fmAlbum = new AlbumFragment();
     private ArtistFragment fmArtist = new ArtistFragment();
@@ -262,4 +265,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding>
 //        app.getService().create(index);
 
     }
+
+
 }

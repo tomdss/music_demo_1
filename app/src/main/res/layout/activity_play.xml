@@ -8,6 +8,12 @@
             name="isPlaying"
             type="java.lang.Boolean" />
         <variable
+            name="isRepeat"
+            type="java.lang.Boolean" />
+        <variable
+            name="isShuffle"
+            type="java.lang.Boolean" />
+        <variable
             name="current"
             type="java.lang.Integer" />
         <variable
@@ -88,6 +94,15 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="32dp"
+                    android:src="@drawable/ic_stage_shuffle"
+                    android:onClick="@{(v)->listener.shuffle()}"
+                    app:selected="@{isShuffle}"
+                    />
+
 
                 <ImageView
                     android:layout_width="50dp"
@@ -110,6 +125,15 @@
                     android:layout_height="50dp"
                     android:src="@drawable/ic_next"
                     android:onClick="@{(v)->listener.next()}"
+                    />
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="32dp"
+                    android:src="@drawable/ic_stage_repeat"
+                    android:onClick="@{(v)->listener.repeat()}"
+                    app:selected="@{isRepeat}"
                     />
 
             </LinearLayout>

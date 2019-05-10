@@ -19,6 +19,7 @@ import com.phongbm.musicplayer.R;
 import com.phongbm.musicplayer.model.Music;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MP3Service extends Service implements MediaPlayer.OnCompletionListener,Runnable {
 
@@ -28,6 +29,9 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
     private Thread t;
 
     private MutableLiveData<Boolean> isPlaying = new MutableLiveData<>();
+    private MutableLiveData<Boolean> isRepeat = new MutableLiveData<>();
+    private MutableLiveData<Boolean> isShuffle = new MutableLiveData<>();
+
     private MutableLiveData<String> name = new MutableLiveData<>();
     private MutableLiveData<Boolean> isLife = new MutableLiveData<>();
     private MutableLiveData<String> artists = new MutableLiveData<>();
@@ -50,6 +54,9 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
 //        pushNotification();
         t = new Thread(this);
         t.start();
+        isShuffle.postValue(false);
+        isRepeat.postValue(false);
+
     }
 
     @Override
@@ -122,6 +129,7 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
         name.postValue(arrMusic.get(index).getTitle());
         isLife.postValue(true);
 
+
         music.postValue(arrMusic.get(index));
 //        pushNotification();
         start();
@@ -140,15 +148,59 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
         if (player!=null){
             player.start();
             isPlaying.postValue(true);
-            pushNotification();
+
+//            pushNotification();
         }
     }
+
+    public void shuffle(){
+        if (player!=null){
+
+            if(isShuffle.getValue()){
+                isShuffle.postValue(false);
+            }else {
+                isShuffle.postValue(true);
+            }
+
+
+
+//            pushNotification();
+        }
+    }
+//    public void notShuffle() {
+//
+//        if (player!=null){
+//
+//            isShuffle.postValue(false);
+////            pushNotification();
+//        }
+//
+//    }
+
+    public void repeat(){
+        if (player!=null){
+
+            if(isRepeat.getValue()){
+                isRepeat.postValue(false);
+            }else {
+                isRepeat.postValue(true);
+            }
+
+
+
+//            pushNotification();
+        }
+    }
+
+
+
+
 
     public void pause(){
         if (player!=null){
             player.pause();
             isPlaying.postValue(false);
-            pushNotification();
+//            pushNotification();
         }
     }
 
@@ -201,13 +253,21 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
         }
     }
 
+
+
     @IntDef({NEXT,PREV})
     public @interface TypeChange{
 
     }
 
     public void change(@TypeChange int value){
-        currentIndex += value;
+        if(isShuffle.getValue()){
+            currentIndex = new Random().nextInt(arrMusic.size());
+            int i =100;
+        }else {
+            currentIndex += value;
+            int j =200;
+        }
         if(currentIndex>=arrMusic.size()){
             currentIndex=0;
         }else if(currentIndex<0){
@@ -218,7 +278,15 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        change(NEXT);
+        if(!isRepeat.getValue()){
+            if(currentIndex<(arrMusic.size()-1)){
+                change(NEXT);
+            }
+
+        }else {
+            change(NEXT);
+        }
+
     }
 
     public class MP3Binder extends Binder{
@@ -247,5 +315,13 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
 
     public MutableLiveData<Integer> getCurrent() {
         return current;
+    }
+
+    public MutableLiveData<Boolean> getIsRepeat() {
+        return isRepeat;
+    }
+
+    public MutableLiveData<Boolean> getIsShuffle() {
+        return isShuffle;
     }
 }
